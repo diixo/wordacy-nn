@@ -1,4 +1,6 @@
 
+# https://keras.io/examples/nlp/neural_machine_translation_with_transformer/
+
 import pathlib
 import random
 import string
@@ -8,6 +10,8 @@ import numpy as np
 import keras
 from keras import layers
 from keras.layers import TextVectorization
+
+import tensorflow.data as tf_data
 import tensorflow.strings as tf_strings
 
 
@@ -23,8 +27,8 @@ for line in lines:
     spa = "[start] " + spa + " [end]"
     text_pairs.append((eng, spa))
 
-for _ in range(5):
-    print(random.choice(text_pairs))
+# for _ in range(5):
+#     print(random.choice(text_pairs))
 
 #################################################################
 
@@ -40,6 +44,9 @@ print(f"{len(text_pairs)} total pairs")
 print(f"{len(train_pairs)} training pairs")
 print(f"{len(val_pairs)} validation pairs")
 print(f"{len(test_pairs)} test pairs")
+
+#################################################################
+# Vectorizing the text data:
 
 strip_chars = string.punctuation + "¿"
 strip_chars = strip_chars.replace("[", "")
@@ -70,4 +77,41 @@ train_eng_texts = [pair[0] for pair in train_pairs]
 train_spa_texts = [pair[1] for pair in train_pairs]
 eng_vectorization.adapt(train_eng_texts)
 spa_vectorization.adapt(train_spa_texts)
+
+#################################################################
+
+# TextVectorization = Embedding + pad_sequences
+
+#################################################################
+
+def format_dataset(eng, spa):
+    eng = eng_vectorization(eng)
+    spa = spa_vectorization(spa)
+    return (
+        {
+            "encoder_inputs": eng,
+            "decoder_inputs": spa[:, :-1],
+        },
+        spa[:, 1:],
+    )
+
+
+def make_dataset(pairs):
+    eng_texts, spa_texts = zip(*pairs)
+    eng_texts = list(eng_texts)
+    spa_texts = list(spa_texts)
+    dataset = tf_data.Dataset.from_tensor_slices((eng_texts, spa_texts))
+    dataset = dataset.batch(batch_size)
+    dataset = dataset.map(format_dataset)
+    return dataset.cache().shuffle(2048).prefetch(16)
+
+
+train_ds = make_dataset(train_pairs)
+val_ds = make_dataset(val_pairs)
+
+# Let's take a quick look at the sequence shapes (we have batches of 64 pairs, and all sequences are 20 steps long):
+for inputs, targets in train_ds.take(1):
+    print(f'inputs["encoder_inputs"].shape: {inputs["encoder_inputs"].shape}')
+    print(f'inputs["decoder_inputs"].shape: {inputs["decoder_inputs"].shape}')
+    print(f"targets.shape: {targets.shape}")
 #################################################################
