@@ -17,7 +17,7 @@ import tensorflow.data as tf_data
 import tensorflow.strings as tf_strings
 
 
-text_file = pathlib.Path("spa-eng/spa.txt")
+text_file = pathlib.Path("spa-lite.txt")
 
 if text_file.exists():
         fd = open(text_file, 'r', encoding='utf-8')
@@ -36,16 +36,14 @@ for line in lines:
 
 random.shuffle(text_pairs)
 num_val_samples = int(0.15 * len(text_pairs))
-num_train_samples = len(text_pairs) - 2 * num_val_samples
+num_train_samples = len(text_pairs) - num_val_samples
 
 train_pairs = text_pairs[:num_train_samples]
-val_pairs = text_pairs[num_train_samples : num_train_samples + num_val_samples]
-test_pairs = text_pairs[num_train_samples + num_val_samples :]
+val_pairs = text_pairs[num_train_samples :]
 
 print(f"{len(text_pairs)} total pairs")
 print(f"{len(train_pairs)} training pairs")
 print(f"{len(val_pairs)} validation pairs")
-print(f"{len(test_pairs)} test pairs")
 
 #################################################################
 # Vectorizing the text data:
@@ -55,7 +53,7 @@ strip_chars = strip_chars.replace("[", "")
 strip_chars = strip_chars.replace("]", "")
 
 vocab_size = 15000
-sequence_length = 20
+sequence_length = 10
 batch_size = 64
 
 
@@ -269,7 +267,7 @@ decoder_outputs = decoder([decoder_inputs, encoder_outputs])
 transformer = keras.Model([encoder_inputs, decoder_inputs], decoder_outputs, name="transformer")
 
 #################################################################
-epochs = 1  # This should be at least 30 for convergence
+epochs = 5  # This should be at least 30 for convergence
 
 transformer.summary()
 transformer.compile("rmsprop", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
@@ -287,7 +285,7 @@ we hit the token `"[end]"`.
 
 spa_vocab = spa_vectorization.get_vocabulary()
 spa_index_lookup = dict(zip(range(len(spa_vocab)), spa_vocab))
-max_decoded_sentence_length = 20
+max_decoded_sentence_length = sequence_length
 
 
 def decode_sequence(input_sentence):
@@ -306,3 +304,8 @@ def decode_sequence(input_sentence):
     return decoded_sentence
 
 #################################################################
+test_eng_texts = ["I love you"]
+
+input_sentence = random.choice(test_eng_texts)
+translated = decode_sequence(input_sentence)
+print(test_eng_texts, translated)
