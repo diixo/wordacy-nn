@@ -1,7 +1,4 @@
 
-"""
-## Setup
-"""
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -16,8 +13,6 @@ from keras.datasets import imdb
 """
 ## Implement a Transformer block as a layer
 """
-
-
 def causal_attention_mask(batch_size, n_dest, n_src, dtype):
     """
     Mask the upper half of the dot product matrix in self attention.
@@ -69,7 +64,6 @@ class TransformerBlock(layers.Layer):
 Create two separate embedding layers: one for tokens and one for token index
 (positions).
 """
-
 class TokenAndPositionEmbedding(layers.Layer):
     def __init__(self, maxlen, vocab_size, embed_dim):
         super().__init__()
@@ -115,7 +109,6 @@ curl -O https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
 tar -xf aclImdb_v1.tar.gz
 """
 
-
 batch_size = 128
 
 # The dataset contains each review in a separate text file
@@ -123,10 +116,10 @@ batch_size = 128
 # Create a list all files
 filenames = []
 directories = [
-    "aclImdb/train/pos",
-    "aclImdb/train/neg",
-    "aclImdb/test/pos",
-    "aclImdb/test/neg",
+    "E:/aclImdb/train/pos",
+    "E:/aclImdb/train/neg",
+    "E:/aclImdb/test/pos",
+    "E:/aclImdb/test/neg",
 ]
 for dir in directories:
     for f in os.listdir(dir):
@@ -193,9 +186,7 @@ class TextGenerator(keras.callbacks.Callback):
         print_every: Integer, print after this many epochs.
     """
 
-    def __init__(
-        self, max_tokens, start_tokens, index_to_word, top_k=10, print_every=1
-    ):
+    def __init__(self, max_tokens, start_tokens, index_to_word, top_k=10, print_every=1):
         self.max_tokens = max_tokens
         self.start_tokens = start_tokens
         self.index_to_word = index_to_word
