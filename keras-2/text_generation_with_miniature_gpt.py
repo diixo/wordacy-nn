@@ -1,32 +1,4 @@
-"""
-Title: Text generation with a miniature GPT
-Author: [Apoorv Nandan](https://twitter.com/NandanApoorv)
-Date created: 2020/05/29
-Last modified: 2020/05/29
-Description: Implement a miniature version of GPT and train it to generate text.
-Accelerator: GPU
-"""
-"""
-## Introduction
 
-This example demonstrates how to implement an autoregressive language model
-using a miniature version of the GPT model.
-The model consists of a single Transformer block with causal masking
-in its attention layer.
-We use the text from the IMDB sentiment classification dataset for training
-and generate new movie reviews for a given prompt.
-When using this script with your own dataset, make sure it has at least
-1 million words.
-
-This example should be run with `tf-nightly>=2.3.0-dev20200531` or
-with TensorFlow 2.3 or higher.
-
-**References:**
-
-- [GPT](https://www.semanticscholar.org/paper/Improving-Language-Understanding-by-Generative-Radford/cd18800a0fe0b668a1cc19f2ec95b5003d0a5035)
-- [GPT-2](https://www.semanticscholar.org/paper/Language-Models-are-Unsupervised-Multitask-Learners-Radford-Wu/9405cc0d6169988371b2755e573cc28650d14dfe)
-- [GPT-3](https://arxiv.org/abs/2005.14165)
-"""
 """
 ## Setup
 """
@@ -38,6 +10,7 @@ import numpy as np
 import os
 import string
 import random
+from keras.datasets import imdb
 
 
 """
@@ -97,7 +70,6 @@ Create two separate embedding layers: one for tokens and one for token index
 (positions).
 """
 
-
 class TokenAndPositionEmbedding(layers.Layer):
     def __init__(self, maxlen, vocab_size, embed_dim):
         super().__init__()
@@ -137,13 +109,6 @@ def create_model():
     )  # No loss and optimization based on word embeddings from transformer block
     return model
 
-
-"""
-## Prepare the data for word-level language modelling
-
-Download the IMDB dataset and combine training and validation sets for a text
-generation task.
-"""
 
 """shell
 curl -O https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
@@ -214,8 +179,6 @@ text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
 """
 ## Implement a Keras callback for generating text
 """
-
-
 class TextGenerator(keras.callbacks.Callback):
     """A callback to generate text from a trained model.
     1. Feed some starting prompt to the model
