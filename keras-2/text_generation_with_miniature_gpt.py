@@ -233,7 +233,7 @@ class TextGenerator(keras.callbacks.Callback):
         print(f"generated text:\n{txt}\n")
 
 ################################################################################
-start_prompt = "diixo this movie is"
+start_prompt = "this movie is"
 num_tokens_generated = 40
 
 
