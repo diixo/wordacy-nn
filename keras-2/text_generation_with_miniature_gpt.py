@@ -1,3 +1,7 @@
+'''
+src:  https://keras.io/examples/generative/text_generation_with_miniature_gpt/
+code: https://github.com/keras-team/keras-io/blob/master/examples/generative/text_generation_with_miniature_gpt.py
+'''
 
 import tensorflow as tf
 from tensorflow import keras
