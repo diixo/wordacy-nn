@@ -81,12 +81,13 @@ class TokenAndPositionEmbedding(layers.Layer):
 """
 ## Implement the miniature GPT model
 """
-vocab_size = 20000  # Only consider the top 20k words
-maxlen = 80  # Max sequence size
-embed_dim = 256  # Embedding size for each token
-num_heads = 2  # Number of attention heads
+vocab_size = 20000      # Only consider the top 20k words
+maxlen = 80             # Max sequence size
+embed_dim = 256         # Embedding size for each token
+num_heads = 2           # Number of attention heads
 feed_forward_dim = 256  # Hidden layer size in feed forward network inside transformer
 
+batch_size = 128
 
 def create_model():
     inputs = layers.Input(shape=(maxlen,), dtype=tf.int32)
@@ -109,7 +110,6 @@ curl -O https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
 tar -xf aclImdb_v1.tar.gz
 """
 
-batch_size = 128
 
 # The dataset contains each review in a separate text file
 # The text files are present in four different folders
@@ -158,6 +158,7 @@ def prepare_lm_inputs_labels(text):
     word at position (i+1). The model will use all words up till position (i)
     to predict the next word.
     """
+    print(text)
     text = tf.expand_dims(text, -1)
     tokenized_sentences = vectorize_layer(text)
     x = tokenized_sentences[:, :-1]

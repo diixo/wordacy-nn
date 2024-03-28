@@ -10,15 +10,16 @@ import random
 from keras.datasets import imdb
 
 
-
 """
 ## Implement the miniature GPT model
 """
-vocab_size = 20000  # Only consider the top 20k words
-maxlen = 80  # Max sequence size
-embed_dim = 256  # Embedding size for each token
-num_heads = 2  # Number of attention heads
+vocab_size = 20000      # Only consider the top 20k words
+maxlen = 80             # Max sequence size
+embed_dim = 256         # Embedding size for each token
+num_heads = 2           # Number of attention heads
 feed_forward_dim = 256  # Hidden layer size in feed forward network inside transformer
+
+batch_size = 128
 
 
 """shell
@@ -26,7 +27,6 @@ curl -O https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
 tar -xf aclImdb_v1.tar.gz
 """
 
-batch_size = 128
 
 # The dataset contains each review in a separate text file
 # The text files are present in four different folders
@@ -85,4 +85,25 @@ def prepare_lm_inputs_labels(text):
 text_ds = text_ds.map(prepare_lm_inputs_labels, num_parallel_calls=tf.data.AUTOTUNE)
 text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
 
-print("finished")
+###############################
+
+# Создание обратного маппинга (индекс -> слово)
+index_lookup = dict(enumerate(vocab))
+
+def indices_to_text(indices):
+    words = [index_lookup.get(index, "") for index in indices]
+    return ' '.join(words)
+
+def print_out():
+    # inputs, targets: shape(batch_size, maxlen)
+    for inputs, targets in text_ds:
+        for i in range(inputs.shape[0]):
+            t0 = inputs[i,:].numpy()
+            t1 = targets[i,:].numpy()
+
+            print(">>", indices_to_text(t0))
+            print(">>", indices_to_text(t1))
+            print("="*65)
+
+
+print_out()
