@@ -233,16 +233,18 @@ class TextGenerator(keras.callbacks.Callback):
         print(f"generated text:\n{txt}\n")
 
 ################################################################################
+start_prompt = "diixo this movie is"
+num_tokens_generated = 40
+
+
 # Tokenize starting prompt
 word_to_index = {}
 for index, word in enumerate(vocab):
     word_to_index[word] = index
 
 
-start_prompt = "diixo this movie is"
-start_tokens = [word_to_index.get(_, 1) for _ in start_prompt.split()]
 
-num_tokens_generated = 40
+start_tokens = [word_to_index.get(_, 1) for _ in start_prompt.split()]
 text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, vocab)
 
 ############################################################
