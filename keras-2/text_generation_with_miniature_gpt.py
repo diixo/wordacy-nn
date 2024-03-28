@@ -199,11 +199,13 @@ class TextGenerator(keras.callbacks.Callback):
         return self.index_to_word[number]
 
     def on_epoch_end(self, epoch, logs=None):
-        start_tokens = [_ for _ in self.start_tokens]
         if (epoch + 1) % self.print_every != 0:
             return
+
+        start_tokens = [_ for _ in self.start_tokens]
         num_tokens_generated = 0
         tokens_generated = []
+
         while num_tokens_generated <= self.max_tokens:
             pad_len = maxlen - len(start_tokens)
             sample_index = len(start_tokens) - 1
@@ -220,8 +222,9 @@ class TextGenerator(keras.callbacks.Callback):
             tokens_generated.append(sample_token)
             start_tokens.append(sample_token)
             num_tokens_generated = len(tokens_generated)
-        txt = " ".join(
-            [self.detokenize(_) for _ in self.start_tokens + tokens_generated]
+        
+            txt = " ".join(
+                [self.detokenize(_) for _ in self.start_tokens + tokens_generated]
         )
         print(f"generated text:\n{txt}\n")
 
