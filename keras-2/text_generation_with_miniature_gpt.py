@@ -60,7 +60,6 @@ vectorize_layer = TextVectorization(
     output_sequence_length=maxlen + 1,
 )
 vectorize_layer.adapt(text_ds)
-vocab = vectorize_layer.get_vocabulary()  # To get words back from token indices
 
 
 def prepare_lm_inputs_labels(text):
@@ -237,19 +236,22 @@ start_prompt = "this movie is"
 num_tokens_generated = 40
 
 
+str_tokens = start_prompt.split()
+
+vocab = vectorize_layer.get_vocabulary() # index_to_word
+
 # Tokenize starting prompt
 word_to_index = {}
 for index, word in enumerate(vocab):
     word_to_index[word] = index
 
 
-
-start_tokens = [word_to_index.get(_, 1) for _ in start_prompt.split()]
+start_tokens = [word_to_index.get(_, 1) for _ in str_tokens]
 text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, vocab)
 
 ############################################################
-# convert string sentence to tokenize sentence
-str_tokens = start_prompt.split()
+# convert string sentence to tokenized sentence
+
 tokenized_sentences = vectorize_layer(start_prompt)
 tokenized_sentences = tokenized_sentences[:len(str_tokens)].numpy()
 
