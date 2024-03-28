@@ -235,11 +235,20 @@ for index, word in enumerate(vocab):
     word_to_index[word] = index
 
 
-start_prompt = "this movie is"
+start_prompt = "diixo this movie is"
 start_tokens = [word_to_index.get(_, 1) for _ in start_prompt.split()]
+
 num_tokens_generated = 40
 text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, vocab)
 
+############################################################
+# convert string sentence to tokenize sentence
+str_tokens = start_prompt.split()
+tokenized_sentences = vectorize_layer(start_prompt)
+tokenized_sentences = tokenized_sentences[:len(str_tokens)].numpy()
+
+print(start_tokens, tokenized_sentences)
+############################################################
 
 model = create_model()
 
