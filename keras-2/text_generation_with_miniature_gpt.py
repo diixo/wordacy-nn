@@ -202,7 +202,11 @@ class TextGenerator(keras.callbacks.Callback):
         if (epoch + 1) % self.print_every != 0:
             return
 
-        start_tokens = [_ for _ in self.start_tokens]
+        return self.generate(self.start_tokens)
+
+    def generate(self, input_tokens):
+
+        start_tokens = [_ for _ in input_tokens]
         num_tokens_generated = 0
         tokens_generated = []
 
@@ -224,7 +228,7 @@ class TextGenerator(keras.callbacks.Callback):
             num_tokens_generated = len(tokens_generated)
         
             txt = " ".join(
-                [self.detokenize(_) for _ in self.start_tokens + tokens_generated]
+                [self.detokenize(_) for _ in input_tokens + tokens_generated]
         )
         print(f"generated text:\n{txt}\n")
 
@@ -247,7 +251,7 @@ str_tokens = start_prompt.split()
 tokenized_sentences = vectorize_layer(start_prompt)
 tokenized_sentences = tokenized_sentences[:len(str_tokens)].numpy()
 
-print(start_tokens, tokenized_sentences)
+#print(start_tokens, tokenized_sentences)
 ############################################################
 
 model = create_model()
