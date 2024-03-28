@@ -17,7 +17,7 @@ import tensorflow.data as tf_data
 import tensorflow.strings as tf_strings
 
 
-text_file = pathlib.Path("spa-lite.txt")
+text_file = pathlib.Path("spa-eng/spa-lite.txt")
 
 if text_file.exists():
         fd = open(text_file, 'r', encoding='utf-8')
