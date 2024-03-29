@@ -41,14 +41,14 @@ txt_lines.extend([detokenize(review) for review in x_train])
 print("Train sequences: ", len(txt_lines))
 ################################################################################
 
+#txt_lines = txt_lines[0:500]
+txt_lines = txt_lines[591:599]
+
 # txt_lines = [
 #     "Był to świetny pomysł, bo punktował Prawo i Sprawiedliwość tam", 
 #     "gdzie jest ono najsłabsze, mimo że udaje najsilniejsze. Uderzał w wizerunek państwa dobrobytu", 
 #     "które nikogo nie zostawia z tyłu i wyrównuje szanse.",
 #     "Tutaj mamy pewnego rodzaju déjà vu."]
-
-#txt_lines = txt_lines[500:590]
-txt_lines = txt_lines[591:599]
 
 # for sent in txt_lines:
 #     print(">> ", sent)
@@ -79,7 +79,9 @@ vectorize_layer = TextVectorization(
     output_sequence_length=maxlen + 1,
 )
 vectorize_layer.adapt(text_ds)
-vocab = vectorize_layer.get_vocabulary()
+
+diixonary = vectorize_layer.get_vocabulary()
+print(len(diixonary))
 
 exit(0)
 
