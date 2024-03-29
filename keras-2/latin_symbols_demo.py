@@ -3,7 +3,7 @@ import string
 
 
 ################################################################################
-def q_translate(txt: str):
+def transliterate(txt: str):
    # eu_lower:
     translation = {
       # a=0x0061
@@ -76,9 +76,13 @@ eu_lower_ext = [ #22
 ]
 ################################################################################
 
-print(eu_upper)
-print(eu_lower)
+def demo(): 
+   print(eu_upper)
+   print(eu_lower)
 
-print(eu_upper_ext)
-print(eu_lower_ext)
+   print(eu_upper_ext)
+   print(eu_lower_ext)
 
+
+if __name__ == "__main__":
+   demo()
