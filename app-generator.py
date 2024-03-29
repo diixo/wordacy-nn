@@ -1,7 +1,7 @@
 '''
 code: text_generation_with_miniature_gpt.py
 '''
-
+import re
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -24,35 +24,35 @@ feed_forward_dim = 256  # Hidden layer size in feed forward network inside trans
 
 batch_size = 128
 
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
 
-# The dataset contains each review in a separate text file
-# The text files are present in four different folders
-# Create a list all files
-filenames = []
-directories = [
-    "E:/aclImdb/train/pos",
-    "E:/aclImdb/train/neg",
-    "E:/aclImdb/test/pos",
-    "E:/aclImdb/test/neg",
-]
-for dir in directories:
-    for f in os.listdir(dir):
-        filenames.append(os.path.join(dir, f))
+################################################################################
+word_to_index = imdb.get_word_index()
+index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
+################################################################################
+def detokenize(index_array):
+    #ids_array = index_array[:maxlen + 2]
+    return " ".join([index_to_word.get(i, " ") for i in index_array])
+################################################################################
 
-print(f"{len(filenames)} files")
+txt_lines  = []
+txt_lines.extend([detokenize(review) for review in x_train])
+txt_lines.extend([detokenize(review) for review in x_test])
+print("Train sequences: ", len(txt_lines))
+################################################################################
 
 # Create a dataset from text files
-random.shuffle(filenames)
-text_ds = tf.data.TextLineDataset(filenames)
+random.shuffle(txt_lines)
+text_ds = tf.data.Dataset.from_tensor_slices(txt_lines)
 text_ds = text_ds.shuffle(buffer_size=256)
 text_ds = text_ds.batch(batch_size)
 
 
 def custom_standardization(input_string):
-    """Remove html line-break tags and handle punctuation"""
-    lowercased = tf.strings.lower(input_string)
-    stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    lowercase = tf.strings.lower(input_string)
+    return lowercase
+    return tf.strings.regex_replace(lowercase, "[%s]" % re.escape(string.punctuation), "")
+################################################################################
 
 
 # Create a vectorization layer and adapt it to the text
@@ -78,9 +78,12 @@ def prepare_lm_inputs_labels(text):
     return x, y
 
 
-text_ds = text_ds.map(prepare_lm_inputs_labels, num_parallel_calls=tf.data.AUTOTUNE)
-text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
-
+text_ds = text_ds.map(prepare_lm_inputs_labels)
+#text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
+for inputs, targets in text_ds:
+    # inputs, targets: shape(batch_size, maxlen)
+    print(inputs.shape, targets.shape)
+    break
 
 """
 ## Implement a Transformer block as a layer
@@ -241,16 +244,16 @@ num_tokens_generated = 40
 
 str_tokens = start_prompt.split()
 
-vocab = vectorize_layer.get_vocabulary() # index_to_word
+id_to_word = vectorize_layer.get_vocabulary()
 
 # Tokenize starting prompt
-word_to_index = {}
-for index, word in enumerate(vocab):
-    word_to_index[word] = index
+word_to_id = {}
+for index, word in enumerate(id_to_word):
+    word_to_id[word] = index
 
 
-start_tokens = [word_to_index.get(_, 1) for _ in str_tokens]
-text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, vocab)
+start_tokens = [word_to_id.get(_, 1) for _ in str_tokens]
+text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, id_to_word)
 
 ############################################################
 # convert string sentence to tokenized sentence
