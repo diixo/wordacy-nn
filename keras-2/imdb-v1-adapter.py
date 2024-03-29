@@ -1,4 +1,7 @@
-
+'''
+code: text_generation_with_miniature_gpt.py
+'''
+import re
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -21,41 +24,51 @@ feed_forward_dim = 256  # Hidden layer size in feed forward network inside trans
 
 batch_size = 128
 
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
 
-"""shell
-curl -O https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
-tar -xf aclImdb_v1.tar.gz
-"""
+################################################################################
+word_to_index = imdb.get_word_index()
+index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
+################################################################################
+def detokenize(index_array):
+    #ids_array = index_array[:maxlen + 2]
+    return " ".join([index_to_word.get(i, " ") for i in index_array])
+################################################################################
 
+txt_lines  = []
+txt_lines.extend([detokenize(review) for review in x_train])
+#txt_lines.extend([detokenize(review) for review in x_test])
+print("Train sequences: ", len(txt_lines))
+################################################################################
 
-# The dataset contains each review in a separate text file
-# The text files are present in four different folders
-# Create a list all files
-filenames = []
-directories = [
-    "E:/aclImdb/train/pos",
-    "E:/aclImdb/train/neg",
-    "E:/aclImdb/test/pos",
-    "E:/aclImdb/test/neg",
-]
-for dir in directories:
-    for f in os.listdir(dir):
-        filenames.append(os.path.join(dir, f))
+# txt_lines = [
+#     "Był to świetny pomysł, bo punktował Prawo i Sprawiedliwość tam", 
+#     "gdzie jest ono najsłabsze, mimo że udaje najsilniejsze. Uderzał w wizerunek państwa dobrobytu", 
+#     "które nikogo nie zostawia z tyłu i wyrównuje szanse.",
+#     "Tutaj mamy pewnego rodzaju déjà vu."]
 
-print(f"{len(filenames)} files")
+#txt_lines = txt_lines[500:590]
+txt_lines = txt_lines[591:599]
+
+# for sent in txt_lines:
+#     print(">> ", sent)
+
 
 # Create a dataset from text files
-random.shuffle(filenames)
-text_ds = tf.data.TextLineDataset(filenames)
+random.shuffle(txt_lines)
+text_ds = tf.data.Dataset.from_tensor_slices(txt_lines)
 text_ds = text_ds.shuffle(buffer_size=256)
 text_ds = text_ds.batch(batch_size)
 
 
+
 def custom_standardization(input_string):
-    """Remove html line-break tags and handle punctuation"""
-    lowercased = tf.strings.lower(input_string)
-    stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    #lowercased = tf.strings.lower(input_string)
+    return input_string
+    # stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
+    # result = tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    # return tf.strings.unicode_decode(result, input_encoding='utf-8', errors='ignore')
+################################################################################
 
 
 # Create a vectorization layer and adapt it to the text
@@ -66,7 +79,9 @@ vectorize_layer = TextVectorization(
     output_sequence_length=maxlen + 1,
 )
 vectorize_layer.adapt(text_ds)
-vocab = vectorize_layer.get_vocabulary()  # To get words back from token indices
+vocab = vectorize_layer.get_vocabulary()
+
+exit(0)
 
 
 def prepare_lm_inputs_labels(text):
