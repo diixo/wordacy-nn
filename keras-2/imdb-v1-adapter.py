@@ -11,6 +11,7 @@ import os
 import string
 import random
 from keras.datasets import imdb
+from latin_symbols_demo import transliterate_lower
 
 
 """
@@ -24,6 +25,7 @@ feed_forward_dim = 256  # Hidden layer size in feed forward network inside trans
 
 batch_size = 128
 
+
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
 
 ################################################################################
@@ -31,18 +33,16 @@ word_to_index = imdb.get_word_index()
 index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
 ################################################################################
 def detokenize(index_array):
-    #ids_array = index_array[:maxlen + 2]
-    return " ".join([index_to_word.get(i, " ") for i in index_array])
+    return " ".join([transliterate_lower(index_to_word.get(i, " ")) for i in index_array])
 ################################################################################
 
 txt_lines  = []
 txt_lines.extend([detokenize(review) for review in x_train])
-#txt_lines.extend([detokenize(review) for review in x_test])
+txt_lines.extend([detokenize(review) for review in x_test])
 print("Train sequences: ", len(txt_lines))
 ################################################################################
 
-#txt_lines = txt_lines[0:500]
-txt_lines = txt_lines[591:599]
+#txt_lines = txt_lines[591:599]
 
 # txt_lines = [
 #     "Był to świetny pomysł, bo punktował Prawo i Sprawiedliwość tam", 
@@ -63,8 +63,8 @@ text_ds = text_ds.batch(batch_size)
 
 
 def custom_standardization(input_string):
-    #lowercased = tf.strings.lower(input_string)
-    return input_string
+    lowercased = tf.strings.lower(input_string)
+    return lowercased
     # stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
     # result = tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
     # return tf.strings.unicode_decode(result, input_encoding='utf-8', errors='ignore')
@@ -79,11 +79,8 @@ vectorize_layer = TextVectorization(
     output_sequence_length=maxlen + 1,
 )
 vectorize_layer.adapt(text_ds)
-
-diixonary = vectorize_layer.get_vocabulary()
-print(len(diixonary))
-
-exit(0)
+vocab = vectorize_layer.get_vocabulary()
+print("vocabulary", len(vocab))
 
 
 def prepare_lm_inputs_labels(text):
@@ -122,5 +119,4 @@ def print_out():
             print(">>", indices_to_text(t1))
             print("="*65)
 
-
-print_out()
+#print_out()

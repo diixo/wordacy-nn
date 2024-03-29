@@ -3,7 +3,7 @@ import string
 
 
 ################################################################################
-def transliterate(txt: str):
+def transliterate_lower(txt: str):
    # eu_lower:
     translation = {
       # a=0x0061
@@ -36,8 +36,11 @@ def transliterate(txt: str):
       0x00fd: 0x0079, 0x00ff: 0x0079, 
       # z=0x007a
       0x017a: 0x007a, 0x017c: 0x007a, 0x017e: 0x007a, 
-      ##
+      ## TODO:
       #0x00fe, 0x00e6, 0x00f6, 0x00f8, 0x00df,
+
+      # extra: romanian with sedilia
+      0x015f: 0x0073, 0x0163: 0x0074
       }
 
     return txt.translate(translation)
