@@ -81,7 +81,10 @@ def prepare_lm_inputs_labels(text):
 
 text_ds = text_ds.map(prepare_lm_inputs_labels, num_parallel_calls=tf.data.AUTOTUNE)
 text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
-
+for inputs, targets in text_ds:
+    # inputs, targets: shape(batch_size, maxlen)
+    print(inputs.shape, targets.shape)
+    break
 
 """
 ## Implement a Transformer block as a layer
@@ -242,16 +245,16 @@ num_tokens_generated = 40
 
 str_tokens = start_prompt.split()
 
-vocab = vectorize_layer.get_vocabulary() # index_to_word
+id_to_word = vectorize_layer.get_vocabulary()
 
 # Tokenize starting prompt
-word_to_index = {}
-for index, word in enumerate(vocab):
-    word_to_index[word] = index
+word_to_id = {}
+for index, word in enumerate(id_to_word):
+    word_to_id[word] = index
 
 
-start_tokens = [word_to_index.get(_, 1) for _ in str_tokens]
-text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, vocab)
+start_tokens = [word_to_id.get(_, 1) for _ in str_tokens]
+text_gen_callback = TextGenerator(num_tokens_generated, start_tokens, id_to_word)
 
 ############################################################
 # convert string sentence to tokenized sentence
