@@ -108,5 +108,7 @@ def print_out():
             print(">>", indices_to_text(t0))
             print(">>", indices_to_text(t1))
             print("="*65)
+        break
 
-#print_out()
+if __name__ == "__main__":
+    print_out()
