@@ -40,7 +40,7 @@ def transliterate_lower(txt: str):
     '\u016f': 'u', '\u00fc': 'ue', '\u00fd': 'y',  '\u00ff': 'y',  '\u017a': 'z',  '\u017c': 'z',
     '\u017e': 'z', '\u00fe': 'th', '\u00e6': 'ae', '\u00f6': 'oe', '\u00f8': 'oe', '\u00df': 'ss',
     }
-    return txt.translate(translation)
+    return txt.translate(str.maketrans(translation))
 ################################################################################
 def detokenize(index_array):
     return " ".join([transliterate_lower(index_to_word.get(i, " ")) for i in index_array])

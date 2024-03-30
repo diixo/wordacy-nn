@@ -51,7 +51,6 @@ text_ds = text_ds.shuffle(buffer_size=256)
 text_ds = text_ds.batch(batch_size)
 
 
-
 def custom_standardization(input_string):
     lowercased = tf.strings.lower(input_string)
     return lowercased
@@ -61,7 +60,6 @@ def custom_standardization(input_string):
 ################################################################################
 
 
-# Create a vectorization layer and adapt it to the text
 vectorize_layer = TextVectorization(
     standardize=custom_standardization,
     max_tokens=vocab_size - 1,
