@@ -1,4 +1,5 @@
 '''
+Implement the miniature GPT model
 code: text_generation_with_miniature_gpt.py
 '''
 import re
@@ -14,9 +15,7 @@ from keras.datasets import imdb
 from latin_symbols_demo import transliterate_lower
 
 
-"""
-## Implement the miniature GPT model
-"""
+
 vocab_size = 20000      # Only consider the top 20k words
 maxlen = 80             # Max sequence size
 embed_dim = 256         # Embedding size for each token
@@ -24,7 +23,6 @@ num_heads = 2           # Number of attention heads
 feed_forward_dim = 256  # Hidden layer size in feed forward network inside transformer
 
 batch_size = 128
-
 
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
 
@@ -44,7 +42,6 @@ print("Train sequences: ", len(txt_lines))
 
 #txt_lines = txt_lines[591:599]
 
-# Create a dataset from text files
 random.shuffle(txt_lines)
 text_ds = tf.data.Dataset.from_tensor_slices(txt_lines)
 text_ds = text_ds.shuffle(buffer_size=256)
@@ -53,10 +50,8 @@ text_ds = text_ds.batch(batch_size)
 
 def custom_standardization(input_string):
     lowercased = tf.strings.lower(input_string)
-    return lowercased
-    # stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    # result = tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
-    # return tf.strings.unicode_decode(result, input_encoding='utf-8', errors='ignore')
+    stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
+    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
 ################################################################################
 
 
@@ -89,7 +84,6 @@ text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
 
 ###############################
 
-# Создание обратного маппинга (индекс -> слово)
 index_lookup = dict(enumerate(vocab))
 
 def indices_to_text(indices):
