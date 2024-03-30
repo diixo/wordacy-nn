@@ -30,14 +30,13 @@ word_to_index = imdb.get_word_index()
 index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
 ################################################################################
 def transliterate_lower(txt: str):
-    translation = {
-    '\u00e0': 'a', '\u00e1': 'a',  '\u00e2': 'a',  '\u00e3': 'a',  '\u00e4': 'ae', '\u00e5': 'a',
-    '\u0103': 'a', '\u00e7': 'c',  '\u0107': 'c',  '\u010d': 'c',  '\u010f': 'd',  '\u00f0': 'dh',
-    '\u00e9': 'e', '\u00e8': 'e',  '\u00ea': 'e',  '\u00eb': 'e',  '\u011f': 'g',  '\u00ec': 'i',
-    '\u00ed': 'i', '\u00ee': 'i',  '\u00ef': 'i',  '\u0142': 'l',  '\u0148': 'n',  '\u00f1': 'n',
-    '\u00f2': 'o', '\u00f3': 'o',  '\u00f4': 'o',  '\u00f5': 'o',  '\u0159': 'r',  '\u015b': 's',
-    '\u0219': 's', '\u0165': 't',  '\u021b': 't',  '\u00fa': 'u',  '\u00f9': 'u',  '\u00fb': 'u',
-    '\u016f': 'u', '\u00fc': 'ue', '\u00fd': 'y',  '\u00ff': 'y',  '\u017a': 'z',  '\u017c': 'z',
+    translation = { #[48]
+    '\u00e0': 'a', '\u00e1': 'a',  '\u00e2': 'a',  '\u00e3': 'a',  '\u00e4': 'ae', '\u00e5': 'a', '\u0103': 'a',
+    '\u00e7': 'c', '\u0107': 'c',  '\u010d': 'c',  '\u010f': 'd',  '\u00f0': 'dh', '\u00e9': 'e', '\u00e8': 'e',
+    '\u00ea': 'e', '\u00eb': 'e',  '\u011f': 'g',  '\u00ec': 'i',  '\u00ed': 'i',  '\u00ee': 'i', '\u00ef': 'i',
+    '\u0142': 'l', '\u0148': 'n',  '\u00f1': 'n',  '\u00f2': 'o',  '\u00f3': 'o',  '\u00f4': 'o', '\u00f5': 'o',
+    '\u0159': 'r', '\u015b': 's',  '\u0219': 's',  '\u0165': 't',  '\u021b': 't',  '\u00fa': 'u', '\u00f9': 'u',
+    '\u00fb': 'u', '\u016f': 'u',  '\u00fc': 'ue', '\u00fd': 'y',  '\u00ff': 'y',  '\u017a': 'z', '\u017c': 'z',
     '\u017e': 'z', '\u00fe': 'th', '\u00e6': 'ae', '\u00f6': 'oe', '\u00f8': 'oe', '\u00df': 'ss',
     }
     return txt.translate(str.maketrans(translation))
@@ -61,7 +60,8 @@ text_ds = text_ds.batch(batch_size)
 def custom_standardization(input_string):
     lowercased = tf.strings.lower(input_string)
     stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    punctuation = " %$!?:,;\" @~&()*_<=>{|}[/]^\\"
+    return tf.strings.regex_replace(stripped_html, f"([{punctuation}])", r" \1")
 ################################################################################
 
 
