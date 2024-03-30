@@ -44,16 +44,6 @@ print("Train sequences: ", len(txt_lines))
 
 #txt_lines = txt_lines[591:599]
 
-# txt_lines = [
-#     "Był to świetny pomysł, bo punktował Prawo i Sprawiedliwość tam", 
-#     "gdzie jest ono najsłabsze, mimo że udaje najsilniejsze. Uderzał w wizerunek państwa dobrobytu", 
-#     "które nikogo nie zostawia z tyłu i wyrównuje szanse.",
-#     "Tutaj mamy pewnego rodzaju déjà vu."]
-
-# for sent in txt_lines:
-#     print(">> ", sent)
-
-
 # Create a dataset from text files
 random.shuffle(txt_lines)
 text_ds = tf.data.Dataset.from_tensor_slices(txt_lines)

@@ -13,6 +13,7 @@ import random
 from keras.datasets import imdb
 
 
+
 """
 ## Implement the miniature GPT model
 """
@@ -30,9 +31,21 @@ batch_size = 128
 word_to_index = imdb.get_word_index()
 index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
 ################################################################################
+def transliterate_lower(txt: str):
+    translation = {
+    '\u00e0': 'a', '\u00e1': 'a',  '\u00e2': 'a',  '\u00e3': 'a',  '\u00e4': 'ae', '\u00e5': 'a',
+    '\u0103': 'a', '\u00e7': 'c',  '\u0107': 'c',  '\u010d': 'c',  '\u010f': 'd',  '\u00f0': 'dh',
+    '\u00e9': 'e', '\u00e8': 'e',  '\u00ea': 'e',  '\u00eb': 'e',  '\u011f': 'g',  '\u00ec': 'i',
+    '\u00ed': 'i', '\u00ee': 'i',  '\u00ef': 'i',  '\u0142': 'l',  '\u0148': 'n',  '\u00f1': 'n',
+    '\u00f2': 'o', '\u00f3': 'o',  '\u00f4': 'o',  '\u00f5': 'o',  '\u0159': 'r',  '\u015b': 's',
+    '\u0219': 's', '\u0165': 't',  '\u021b': 't',  '\u00fa': 'u',  '\u00f9': 'u',  '\u00fb': 'u',
+    '\u016f': 'u', '\u00fc': 'ue', '\u00fd': 'y',  '\u00ff': 'y',  '\u017a': 'z',  '\u017c': 'z',
+    '\u017e': 'z', '\u00fe': 'th', '\u00e6': 'ae', '\u00f6': 'oe', '\u00f8': 'oe', '\u00df': 'ss',
+    }
+    return txt.translate(translation)
+################################################################################
 def detokenize(index_array):
-    #ids_array = index_array[:maxlen + 2]
-    return " ".join([index_to_word.get(i, " ") for i in index_array])
+    return " ".join([transliterate_lower(index_to_word.get(i, " ")) for i in index_array])
 ################################################################################
 
 txt_lines  = []
@@ -49,9 +62,11 @@ text_ds = text_ds.batch(batch_size)
 
 
 def custom_standardization(input_string):
-    lowercase = tf.strings.lower(input_string)
-    return lowercase
-    return tf.strings.regex_replace(lowercase, "[%s]" % re.escape(string.punctuation), "")
+    lowercased = tf.strings.lower(input_string)
+    return lowercased
+    # stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
+    # result = tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    # return tf.strings.unicode_decode(result, input_encoding='utf-8', errors='ignore')
 ################################################################################
 
 
@@ -63,6 +78,8 @@ vectorize_layer = TextVectorization(
     output_sequence_length=maxlen + 1,
 )
 vectorize_layer.adapt(text_ds)
+vocab = vectorize_layer.get_vocabulary()
+print("vocabulary", len(vocab))
 
 
 def prepare_lm_inputs_labels(text):
