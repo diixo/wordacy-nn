@@ -12,7 +12,7 @@ import os
 import string
 import random
 from keras.datasets import imdb
-from latin_symbols_demo import transliterate_lower
+from latin_transliteration import transliterate_lower
 
 
 
