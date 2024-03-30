@@ -1,4 +1,5 @@
 '''
+Implement the miniature GPT model
 src:  https://keras.io/examples/generative/text_generation_with_miniature_gpt/
 code: https://github.com/keras-team/keras-io/blob/master/examples/generative/text_generation_with_miniature_gpt.py
 '''
@@ -14,9 +15,7 @@ import random
 from keras.datasets import imdb
 
 
-"""
-## Implement the miniature GPT model
-"""
+
 vocab_size = 20000      # Only consider the top 20k words
 maxlen = 80             # Max sequence size
 embed_dim = 256         # Embedding size for each token
@@ -41,6 +40,7 @@ for dir in directories:
         filenames.append(os.path.join(dir, f))
 
 print(f"{len(filenames)} files")
+################################################################################
 
 # Create a dataset from text files
 random.shuffle(filenames)
@@ -50,10 +50,11 @@ text_ds = text_ds.batch(batch_size)
 
 
 def custom_standardization(input_string):
-    """Remove html line-break tags and handle punctuation"""
     lowercased = tf.strings.lower(input_string)
     stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
+    punctuation = " %$!?:,;\" @~&()*_<=>{|}[/]^\\"
+    return tf.strings.regex_replace(stripped_html, f"([{punctuation}])", r" \1")
+################################################################################
 
 
 # Create a vectorization layer and adapt it to the text
@@ -85,6 +86,8 @@ for inputs, targets in text_ds:
     # inputs, targets: shape(batch_size, maxlen)
     print(inputs.shape, targets.shape)
     break
+
+################################################################################
 
 """
 ## Implement a Transformer block as a layer
