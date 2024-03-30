@@ -60,10 +60,8 @@ text_ds = text_ds.batch(batch_size)
 
 def custom_standardization(input_string):
     lowercased = tf.strings.lower(input_string)
-    return lowercased
-    # stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
-    # result = tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
-    # return tf.strings.unicode_decode(result, input_encoding='utf-8', errors='ignore')
+    stripped_html = tf.strings.regex_replace(lowercased, "<br />", " ")
+    return tf.strings.regex_replace(stripped_html, f"([{string.punctuation}])", r" \1")
 ################################################################################
 
 
