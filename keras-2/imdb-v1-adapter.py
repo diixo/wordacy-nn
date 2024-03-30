@@ -81,8 +81,12 @@ def prepare_lm_inputs_labels(text):
 
 text_ds = text_ds.map(prepare_lm_inputs_labels, num_parallel_calls=tf.data.AUTOTUNE)
 text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
+for inputs, targets in text_ds:
+    # inputs, targets: shape(batch_size, maxlen)
+    print(inputs.shape, targets.shape)
+    break
 
-###############################
+################################################################################
 
 index_lookup = dict(enumerate(vocab))
 

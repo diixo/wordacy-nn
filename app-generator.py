@@ -96,6 +96,8 @@ for inputs, targets in text_ds:
     print(inputs.shape, targets.shape)
     break
 
+################################################################################
+
 """
 ## Implement a Transformer block as a layer
 """
