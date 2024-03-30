@@ -1,7 +1,8 @@
 
 import string
 
-transliteration_tbl_upper = { #48
+transliteration_tbl_upper = {
+# Main[48]:
 '\u00c0': 'A',  # À
 '\u00c1': 'A',  # Á
 '\u00c2': 'A',  # Â
@@ -50,10 +51,35 @@ transliteration_tbl_upper = { #48
 '\u00d6': 'Oe', # Ö
 '\u00d8': 'Oe', # Ø
 '\u1e9e': 'Ss', # ẞ
+
+# Extended[22]: 
+'\u0100': 'A',  # Ā
+'\u0104': 'A',  # Ą
+'\u0110': 'D',  # Đ
+'\u0112': 'E',  # Ē
+'\u0116': 'E',  # Ė
+'\u0118': 'E',  # Ę
+'\u012a': 'I',  # Ī
+'\u012e': 'I',  # Į
+'\u0136': 'K',  # Ķ
+'\u0139': 'L',  # Ĺ
+'\u013b': 'L',  # Ļ
+'\u013d': 'L',  # Ľ
+'\u0143': 'N',  # Ń
+'\u0145': 'N',  # Ņ
+'\u014c': 'O',  # Ō
+'\u0150': 'O',  # Ő
+'\u0154': 'R',  # Ŕ
+'\u0160': 'S',  # Š
+'\u016a': 'U',  # Ū
+'\u0170': 'U',  # Ű
+'\u0172': 'U',  # Ų
+'\u01b5': 'Z',  # Ƶ
 }
 
 
-transliteration_tbl_lower = { #48
+transliteration_tbl_lower = {
+# Main[48]:
 '\u00e0': 'a',  # à
 '\u00e1': 'a',  # á
 '\u00e2': 'a',  # â
@@ -102,6 +128,30 @@ transliteration_tbl_lower = { #48
 '\u00f6': 'oe', # ö
 '\u00f8': 'oe', # ø
 '\u00df': 'ss', # ß
+
+# Extended[22]: 
+'\u0101': 'a',  # ā
+'\u0105': 'a',  # ą
+'\u0111': 'd',  # đ
+'\u0113': 'e',  # ē
+'\u0117': 'e',  # ė
+'\u0119': 'e',  # ę
+'\u012b': 'i',  # ī
+'\u012f': 'i',  # į
+'\u0137': 'k',  # ķ
+'\u013a': 'l',  # ĺ
+'\u013c': 'l',  # ļ
+'\u013e': 'l',  # ľ
+'\u0144': 'n',  # ń
+'\u0146': 'n',  # ņ
+'\u014d': 'o',  # ō
+'\u0151': 'o',  # ő
+'\u0155': 'r',  # ŕ
+'\u0161': 's',  # š
+'\u016b': 'u',  # ū
+'\u0171': 'u',  # ű
+'\u0173': 'u',  # ų
+'\u01b6': 'z',  # ƶ
 }
 ################################################################################
 def transliterate_lower(txt: str):
@@ -148,7 +198,7 @@ def demo():
    print(eu_upper_ext)
    print(eu_lower_ext)
 
-   text = "être ou ne pas être, c'est là question, mais ce n'est pas sûr"
+   text = "Dom jest wszędzie tam, gdzie jesteśmy razem"
    print(transliterate_lower(text))
 
 
