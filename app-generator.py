@@ -1,4 +1,5 @@
 '''
+Implement the miniature GPT model
 code: text_generation_with_miniature_gpt.py
 '''
 import re
@@ -14,9 +15,6 @@ from keras.datasets import imdb
 
 
 
-"""
-## Implement the miniature GPT model
-"""
 vocab_size = 20000      # Only consider the top 20k words
 maxlen = 80             # Max sequence size
 embed_dim = 256         # Embedding size for each token
@@ -54,7 +52,6 @@ txt_lines.extend([detokenize(review) for review in x_test])
 print("Train sequences: ", len(txt_lines))
 ################################################################################
 
-# Create a dataset from text files
 random.shuffle(txt_lines)
 text_ds = tf.data.Dataset.from_tensor_slices(txt_lines)
 text_ds = text_ds.shuffle(buffer_size=256)
@@ -70,7 +67,6 @@ def custom_standardization(input_string):
 ################################################################################
 
 
-# Create a vectorization layer and adapt it to the text
 vectorize_layer = TextVectorization(
     standardize=custom_standardization,
     max_tokens=vocab_size - 1,
@@ -95,8 +91,8 @@ def prepare_lm_inputs_labels(text):
     return x, y
 
 
-text_ds = text_ds.map(prepare_lm_inputs_labels)
-#text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
+text_ds = text_ds.map(prepare_lm_inputs_labels, num_parallel_calls=tf.data.AUTOTUNE)
+text_ds = text_ds.prefetch(tf.data.AUTOTUNE)
 for inputs, targets in text_ds:
     # inputs, targets: shape(batch_size, maxlen)
     print(inputs.shape, targets.shape)
